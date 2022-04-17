@@ -12,12 +12,30 @@ const Statistics = (props) => {
   if (all > 0) {
     return (
       <>
-        <StatisticLine text="good" value={good}/>
-        <StatisticLine text="neutral" value={neutral}/>
-        <StatisticLine text="bad" value={bad}/>
-        <StatisticLine text="all" value={all}/>
-        <StatisticLine text="average" value={(good - bad) / all}/>
-        <StatisticLine text="positive" value={(good / all) * 100} text2="%"/>
+        <table>
+          <tbody>
+          <tr>
+            <td>good</td>
+            <td>{good}</td>
+          </tr>
+          <tr>
+            <td>neutral</td>
+            <td>{neutral}</td>
+          </tr>
+          <tr>
+            <td>bad</td>
+            <td>{bad}</td>
+          </tr>
+          <tr>
+            <td>average</td>
+            <td>{(good - bad) / all}</td>
+          </tr>
+          <tr>
+            <td>positive</td>
+            <td>{(good / all) * 100}%</td>
+          </tr>
+          </tbody>
+        </table>
       </>
     )
   }
