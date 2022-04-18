@@ -10,11 +10,6 @@ const App = (props) => {
       .get('https://restcountries.com/v3.1/all')
       .then(response => {
         console.log('promise fulfilled')
-        // console.log(response.data)
-        // console.log(response.data[0].name.common)
-        // response.data.forEach(element => {
-        //   console.log(element.name.common)
-        // });
         setCountries(response.data)
       })
   }

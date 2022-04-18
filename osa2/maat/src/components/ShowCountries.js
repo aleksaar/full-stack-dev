@@ -14,12 +14,11 @@ const ShowCountries = ({countries}) => {
 
     const hook = () => {
         setShowBools(new Array(countries.length).fill(false))
-        console.log("hook")
+        //console.log("hook")
     }
     useEffect(hook, [countries])
 
     if (countries.length <= 10 && countries.length > 1) {
-    
         return (
             <>
             <ul>
@@ -39,7 +38,6 @@ const ShowCountries = ({countries}) => {
         )
     }
     else if (countries.length == 1) {
-        console.log(countries[0])             
         return (
             <>
                 <OneCountry country={countries[0]} show={true}/>
