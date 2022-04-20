@@ -34,9 +34,6 @@ const App = (props) => {
       <h1>Countries</h1>
         <Filter text ={"find countries"} newFilter={newFilter} handleFilterChange={handleFilterChange}/>
         <ShowCountries countries={countriesToShow()} />
-
-
-
     </div>
   )
 }

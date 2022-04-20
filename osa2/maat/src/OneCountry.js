@@ -1,3 +1,5 @@
+import Weather from './components/Weather'
+
 const OneCountry = ({country, show}) => {
     if (show) {
         return (
@@ -14,6 +16,8 @@ const OneCountry = ({country, show}) => {
                     )}
                 </ul>
                 <img src={country.flags.png}/>
+                <h2>Weather in {country.capital[0]}</h2>
+                <Weather city={country.capital[0]} />
             </>
         )
     }
