@@ -4,13 +4,16 @@ import PersonForm from './components/PersonForm'
 import Filter from './components/Filter'
 import axios from 'axios'
 import pbService from './services/phonebook'
+import Notification from './components/Notification'
+
 
 const App = () => {
-
   const [newName, setNewName] = useState('')
   const [newNumber, setNewNumber] = useState('')
   const [persons, setPersons] = useState([])  
   const [newFilter, setNewFilter] = useState('')
+  const [actionMessage, setActionMessage] = useState(null)
+  const [isError, setIsError] = useState(false)
 
   const hook = () => {
     pbService
@@ -32,7 +35,19 @@ const App = () => {
           .update(person.id, updated)
           .then(response => {
             setPersons(persons.map(p => p.id !== person.id ? p : updated))
+            setActionMessage(`${newName} number changed`)
+            setTimeout(() => {
+              setActionMessage(null)
+            }, 5000)
           })
+          .catch(error => {
+            setActionMessage(`${newName} was already removed from server`)
+            setIsError(true)
+            setTimeout(() => {
+              setActionMessage(null)
+              setIsError(false)
+            }, 5000)
+        })
       }
     }
     else {
@@ -45,6 +60,18 @@ const App = () => {
       pbService.create(nameObj)
         .then(() => {
           setPersons(persons.concat(nameObj))
+          setActionMessage(`${newName} added`)
+          setTimeout(() => {
+            setActionMessage(null)
+          }, 5000)
+        })
+        .catch(error => {
+          setActionMessage(`${newName} was already added to server`)
+          setIsError(true)
+          setTimeout(() => {
+            setActionMessage(null)
+            setIsError(false)
+          }, 5000)
         })
     }
     setNewName('')
@@ -81,6 +108,18 @@ const App = () => {
       .deleteEntry(person.id)
       .then(() => {
         setPersons(persons.filter(p => p.id !== person.id))
+        setActionMessage(`${person.name} deleted`)
+          setTimeout(() => {
+            setActionMessage(null)
+          }, 5000)
+      })
+      .catch(error => {
+        setActionMessage(`${person.name} was already removed from server`)
+        setIsError(true)
+        setTimeout(() => {
+          setActionMessage(null)
+          setIsError(false)
+        }, 5000)
       })
     }
   }
@@ -88,6 +127,7 @@ const App = () => {
   return (
     <div>
       <h2>Phonebook</h2>
+      <Notification message={actionMessage} isError={isError}/>
       <Filter  newFilter={newFilter} handleFilterChange={handleFilterChange}/>
       <h3>add new</h3>
       <PersonForm addPerson={addPerson} newName={newName} 
