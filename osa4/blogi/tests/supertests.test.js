@@ -1,6 +1,7 @@
 const mongoose = require('mongoose')
 const supertest = require('supertest')
 const app = require('../app')
+const blog = require('../models/blog')
 const api = supertest(app)
 
 const Blog = require("../models/blog")
@@ -94,7 +95,7 @@ test('id field', async () => {
   expect(response.body[0].id).toBeDefined()
 })
 
-test.only('blog added', async () => {
+test('blog added', async () => {
   const newBlog = {
     title: 'Test',
     author: 'Tester',
@@ -114,6 +115,78 @@ test.only('blog added', async () => {
 
   const titles = blogsAtEnd.map(n => n.title)
   expect(titles).toContain('Test')
+})
+
+
+describe('likes', () => {
+  const newBlog = {
+    title: 'Test',
+    author: 'Tester',
+    url: 'localhost',
+    likes: 9999,
+  }
+
+  const newBlog2 = {
+    title: 'Test2',
+    author: 'Tester2',
+    url: 'localhost',
+  }
+
+  test('likes given', async () => {
+    await api
+    .post('/api/blogs')
+    .send(newBlog)
+    .expect(201)
+    .expect('Content-Type', /application\/json/)
+
+    const blogsAtEnd = await helper.blogsInDb()
+
+    expect(blogsAtEnd[initialBlogs.length].likes).toBe(9999)
+  })
+
+  test('no likes given', async () => {
+    await api
+    .post('/api/blogs')
+    .send(newBlog2)
+    .expect(201)
+    .expect('Content-Type', /application\/json/)
+
+    const response = await api.get('/api/blogs')
+
+    const blogsAtEnd = await helper.blogsInDb()
+
+    expect(blogsAtEnd[initialBlogs.length].likes).toBe(0)
+  })
+
+})
+
+describe.only('title and url required', () => {
+  const newBlog = {
+    author: 'Tester',
+    url: 'localhost',
+    likes: 9999,
+  }
+
+  const newBlog2 = {
+    title: 'Test',
+    author: 'Tester',
+    likes: 9999,
+  }
+
+  test('no title', async () => {
+    await api
+    .post('/api/blogs')
+    .send(newBlog)
+    .expect(400)
+  })
+
+  test('no url', async () => {
+    await api
+    .post('/api/blogs')
+    .send(newBlog2)
+    .expect(400)
+  })
+
 })
 
 afterAll(() => {
