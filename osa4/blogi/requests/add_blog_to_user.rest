@@ -1,0 +1,9 @@
+POST http://localhost:3003/api/blogs
+Content-Type: application/json
+
+{
+    "title": "testing this 2 - electric boogaloo",
+    "author": "man",
+    "url": "yes",
+    "userId": "62767989d8cc77f6a71e4acc"
+}
