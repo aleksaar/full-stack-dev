@@ -160,7 +160,7 @@ describe('likes', () => {
 
 })
 
-describe.only('title and url required', () => {
+describe('title and url required', () => {
   const newBlog = {
     author: 'Tester',
     url: 'localhost',
@@ -187,6 +187,45 @@ describe.only('title and url required', () => {
     .expect(400)
   })
 
+})
+
+describe('delete', () => {
+  test('succeeds with status code 204 if id is valid', async () => {
+    const blogsAtStart = await helper.blogsInDb()
+    const blogToDelete = blogsAtStart[0]
+
+    await api
+      .delete(`/api/blogs/${blogToDelete.id}`)
+      .expect(204)
+
+    const blogsAtEnd = await helper.blogsInDb()
+
+    expect(blogsAtEnd).toHaveLength(initialBlogs.length - 1)
+
+    const titles = blogsAtEnd.map(r => r.title)
+
+    expect(titles).not.toContain(blogToDelete.title)
+  })
+})
+
+test.only('modify likes', async () => {
+  const newBlog = {
+    title: "React patterns",
+    author: "Michael Chan",
+    url: "https://reactpatterns.com/",
+    likes: 7777,
+  }
+
+  const id = "5a422a851b54a676234d17f7"
+  await api
+    .put(`/api/blogs/${id}`)
+    .send(newBlog)
+    .expect(200)
+    .expect('Content-Type', /application\/json/)
+
+  const blogsAtEnd = await helper.blogsInDb()
+
+  expect(blogsAtEnd[0].likes).toBe(7777)
 })
 
 afterAll(() => {
