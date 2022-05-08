@@ -14,6 +14,12 @@ blogsRouter.post('/', async (request, response) => {
 
     const body = request.body
 
+    if (body.title === undefined || body.url === undefined) {
+        return response.status(400).json({
+            error: 'missing title or url'
+        })
+    }
+
     const blog = new Blog ({
         title: body.title,
         author: body.author,
@@ -33,7 +39,6 @@ blogsRouter.delete('/:id', async (request, response) => {
     const user = request.user
 
     const blog = await Blog.findById(request.params.id)
-
     if (blog === null) {
         return response.status(400).json({ error: 'id does not exist' })
     }
@@ -57,13 +62,8 @@ blogsRouter.put('/:id', async (request, response, next) => {
         url: body.url
     }
 
-    try {
-        const updatedBlog = await Blog.findByIdAndUpdate(request.params.id, blog, { new: true })
-        response.json(updatedBlog)
-    }
-    catch (exception) {
-        next(exception)
-      }
+    const updatedBlog = await Blog.findByIdAndUpdate(request.params.id, blog, { new: true })
+    response.json(updatedBlog)
 })
 
 module.exports = blogsRouter
