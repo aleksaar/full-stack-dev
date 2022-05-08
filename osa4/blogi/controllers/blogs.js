@@ -34,13 +34,27 @@ blogsRouter.post('/', async (request, response) => {
     response.status(201).json(savedBlog)    
 })
 
-blogsRouter.delete('/:id', async (request, response, next) => {
-    try {
-      await Blog.findByIdAndRemove(request.params.id)
-      response.status(204).end()
-    } 
-    catch (exception) {
-      next(exception)
+blogsRouter.delete('/:id', async (request, response) => {
+    const token = request.token
+    const decodedToken = jwt.verify(token, process.env.SECRET)
+    if (!token || !decodedToken.id) {
+        return response.status(401).json({ error: 'token missing or invalid' })
+    }
+
+    const user = await User.findById(decodedToken.id)
+
+    const blog = await Blog.findById(request.params.id)
+
+    if (blog === null) {
+        return response.status(400).json({ error: 'id does not exist' })
+    }
+
+    if (user._id.toString() === blog.user.toString()) {
+        await Blog.findByIdAndRemove(request.params.id)
+        response.status(204).end()
+    }
+    else {
+        return response.status(403).json({ error: 'users do not match' })
     }
 })
 
