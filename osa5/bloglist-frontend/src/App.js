@@ -18,7 +18,7 @@ const App = () => {
 
   useEffect(() => {
     blogService.getAll().then(blogs =>
-      setBlogs( blogs )
+      setBlogs( blogs.sort((a, b) => b.likes - a.likes) )
     )
   }, [])
 
@@ -67,7 +67,8 @@ const App = () => {
   const addBlog = async (blogObject) => {
     try {
         const returnedBlog = await blogService.create(blogObject)
-        setBlogs(blogs.concat(returnedBlog))
+        const newBlogs = blogs.concat(returnedBlog)
+        setBlogs(newBlogs.sort((a, b) => b.likes - a.likes))
 
         setMessage(`a new blog "${returnedBlog.title}" by ${returnedBlog.author} added`)
         setTimeout(() => {
@@ -78,10 +79,54 @@ const App = () => {
         setIsError(true)
         setMessage(exception.message)
         setTimeout(() => {
+          setMessage(null)
+          setIsError(false)
+        }, 5000)
+    }  
+  }
+
+  const updateBlog = async (id, blogObject) => {
+    try {
+      const returnedBlog = await blogService.update(id, blogObject)
+      const newBlogs = await blogService.getAll()
+      setBlogs(newBlogs.sort((a, b) => b.likes - a.likes))
+
+      setMessage(`blog "${returnedBlog.title}" likes increased, blogs sorted`)
+      setTimeout(() => {
+          setMessage(null)
+      }, 5000)
+    }
+    catch (exception) {
+        setIsError(true)
+        setMessage(exception.message)
+        setTimeout(() => {
         setMessage(null)
         setIsError(false)
         }, 5000)
     }  
+  }
+
+  const removeBlog = async (title, author, id) => {
+    if (window.confirm(`Remove ${title} by ${author}?`)) {
+      try {
+        await blogService.remove(id)
+        const newBlogs = blogs.filter(b => b.id !== id)
+        setBlogs(newBlogs.sort((a, b) => b.likes - a.likes))
+
+        setMessage(`${title} by ${author} removed`)
+        setTimeout(() => {
+            setMessage(null)
+        }, 5000)
+      }
+      catch (exception) {
+          setIsError(true)
+          setMessage(exception.message)
+          setTimeout(() => {
+          setMessage(null)
+          setIsError(false)
+          }, 5000)
+      }  
+    }
   }
 
   return (
@@ -111,7 +156,12 @@ const App = () => {
       }
       <h2>blogs</h2>
       {blogs.map(blog =>
-            <Blog key={blog.id} blog={blog} />
+            <Blog key={blog.id} 
+              blog={blog} 
+              updateBlog={updateBlog} 
+              currentUser={user} 
+              deleteBlog={removeBlog}
+              />
       )}
     </div>
   )
