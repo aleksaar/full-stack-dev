@@ -1,10 +1,10 @@
 const Notification = ({ message, isError }) => {
   const normalStyle = {
-      color: 'green'
+    color: 'green'
   }
 
   const errorStyle = {
-      color: 'red'
+    color: 'red'
   }
 
   if (message === null) {
@@ -12,21 +12,21 @@ const Notification = ({ message, isError }) => {
   }
 
   if (!isError) {
-      return (
-          <div className="notification" style={normalStyle}>
-            {message}
-          </div>
-        )
+    return (
+      <div className="notification" style={normalStyle}>
+        {message}
+      </div>
+    )
   }
 
   else if (isError) {
-      return (
-          <div className="notification" style={errorStyle}>
-            {message}
-          </div>
-        )
+    return (
+      <div className="notification" style={errorStyle}>
+        {message}
+      </div>
+    )
   }
-  
+
 }
 
 export default Notification

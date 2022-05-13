@@ -30,7 +30,7 @@ const Blog = ({ blog, updateBlog, currentUserName, deleteBlog }) => {
 
   return(
     <div style={blogStyle}>
-      {blog.title} - {blog.author}
+      <p className='blogTitleAuthor'>{blog.title} - {blog.author}</p>
       <Togglable buttonLabel='view' buttonLabel2='hide'>
         <p>{blog.url}</p>
         <p>likes: {blog.likes}<button onClick={updateThisBlog}>like</button></p>
@@ -50,9 +50,9 @@ const Blog = ({ blog, updateBlog, currentUserName, deleteBlog }) => {
 
 Blog.propTypes = {
   blog: PropTypes.object.isRequired,
-  updateBlog: PropTypes.func.isRequired,
-  currentUserName: PropTypes.string.isRequired,
-  deleteBlog: PropTypes.func.isRequired
+  updateBlog: PropTypes.func,
+  currentUserName: PropTypes.string,
+  deleteBlog: PropTypes.func
 }
 
 export default Blog
